@@ -1,0 +1,51 @@
+﻿@model GenAiWebsite.Models.IndexViewModel
+
+@{
+    ViewData["Title"] = "GenAiSites";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="GenAISites">
+    <div>
+        <h1>
+            Generative AI Websites
+        </h1>
+        <a id="GA" asp-controller="GenAIs" asp-action="Create" asp-route-stringValue="CreateRedirectToGenAiSites">Click
+            here to add a new
+            generative AI Website</a>
+    </div>
+    <div id="websites">
+        @foreach (var genAI in Model.GenAIList)
+        {
+            <div class="website">
+                <div class="rpt"></div>
+                <img class="content" src="@Url.Content("~/Images/" + genAI.ImageFilename)" alt="@genAI.GenAIName">
+                <div class="yellow_grad">
+                    <h2>@genAI.GenAIName</h2>
+                    <p>@genAI.Summary</p>
+                    @if (Model.IsAuthenticated)
+                    {
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <div class="btn-group" role="group" aria-label="Website Actions">
+                                <a asp-area="" asp-controller="GenAIs" asp-action="Like" asp-route-id="@genAI.Id"
+                                    class="btn btn-primary">Like(@genAI.Like)</a>
+                                <a asp-area="" asp-controller="GenAIs" asp-action="Edit" asp-route-id="@genAI.Id"
+                                    class="btn btn-warning">Details</a>
+                                <a asp-area="" asp-controller="GenAIs" asp-action="Delete" asp-route-id="@genAI.Id"
+                                    class="btn btn-danger">Delete</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="btn-group" role="group" aria-label="Website Actions">
+                                <a asp-area="" asp-controller="GenAIs" asp-action="Like" asp-route-id="@genAI.Id"
+                                    class="btn btn-primary">Like(@genAI.Like)</a>
+                            </div>
+                        }
+
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
