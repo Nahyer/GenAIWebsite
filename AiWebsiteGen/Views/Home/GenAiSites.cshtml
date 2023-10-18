@@ -1,0 +1,84 @@
+﻿@model AiWebsiteGen.Models.GenViewModel
+
+@{
+    ViewData["Title"] = "GenAiSites";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool isYellowGrad = true;
+
+}
+<div class="GenAISites">
+    <div id="list">
+        <h1>
+            Generative AI Websites
+        </h1>
+        @if (User.Identity.IsAuthenticated){
+            <a id="add_new" asp-controller="GenAIs" asp-action="Create"
+                asp-route-stringValue="CreateRedirectToGenAiSites">Click
+                here to add a new
+                generative AI Website</a>
+        }else{
+            <p>
+                Please <a asp-area="Identity" asp-page="/Account/Login">Login</a> or<a asp-area="Identity"
+                    asp-page="/Account/Register">Register</a> to add a new
+                generative AI Website.
+            </p>
+        }
+        
+    </div>
+    <div id="websites">
+
+        @foreach (var genAI in Model.GenAIList)
+        {
+            @if (Model.GenAIList == null)
+            {
+                <div>
+                    <p>@ViewBag.Message</p>
+                </div>
+            }else{
+                <div class="website">
+                    <div class="rpt"></div>
+                    <img class="content" src="@Url.Content("~/Images/" + genAI.ImageFilename)" alt="@genAI.GenAIName">
+                    <div class="@((isYellowGrad) ? "yellow_grad" : "blue_grad")">
+                        <h2>@genAI.GenAIName</h2>
+                        <p>@genAI.Summary</p>
+                        @if (Model.IsAuthenticated)
+                        {
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div class=" btnnu btn-group" role="group" aria-label="Website Actions">
+
+                                    @if ((ViewBag.UserHasLikedBlock != null) && (bool)ViewBag.UserHasLikedBlock == true)
+                                    {
+                                        @* Console.WriteLine("@ViewBag.UserHasLikedBlock"); *@
+                                        <p>You have already liked this block.</p>
+                                    }
+                                    else
+                                    {
+                                        @* Console.WriteLine(@{ViewBag.UserHasLikedBlock}); *@
+                                        <a id="likeBtn" asp-area="" asp-controller="GenAIs" asp-action="Like" asp-route-id="@genAI.Id"
+                                            class="btn btn-primary">Like(@genAI.Like)</a>
+
+                                    }
+                                    <a asp-area="" asp-controller="GenAIs" asp-action="Edit" asp-route-id="@genAI.Id"
+                                        class="btn btn-warning mx-1">Edit</a>
+                                    <a asp-area="" asp-controller="GenAIs" asp-action="Delete" asp-route-id="@genAI.Id"
+                                        class="btn btn-danger mx-1">Delete</a>
+                                </div>
+
+                            }
+                            else
+                            {
+                                <div class="btn-group" role="group" aria-label="Website Actions">
+                                    <a id="like_bt" asp-area="" asp-controller="GenAIs" asp-action="Like" asp-route-id="@genAI.Id"
+                                        class="btn btn-primary">Like(@genAI.Like)</a>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            }
+           
+            isYellowGrad = !isYellowGrad;
+        }
+    </div>
+</div>
